@@ -1,0 +1,643 @@
+/* ==========================================================================
+   SUPERHERO PUNCHLINES — design system
+   Tailwind CSS v4 + daisyUI v5, configured CSS-first (no tailwind.config.js).
+   ========================================================================== */
+@import 'tailwindcss';
+
+@plugin 'daisyui' {
+  themes: false;
+}
+
+/* Daytime: a freshly printed comic on warm newsprint. */
+@plugin 'daisyui/theme' {
+  name: 'comic';
+  default: true;
+  color-scheme: light;
+  --color-base-100: #fffaf0;
+  --color-base-200: #fff1c9;
+  --color-base-300: #f6df9d;
+  --color-base-content: #141414;
+  --color-primary: #d7141a;
+  --color-primary-content: #ffffff;
+  --color-secondary: #1453e6;
+  --color-secondary-content: #ffffff;
+  --color-accent: #ffd400;
+  --color-accent-content: #141414;
+  --color-neutral: #141414;
+  --color-neutral-content: #ffffff;
+  --color-info: #1453e6;
+  --color-info-content: #ffffff;
+  --color-success: #11823b;
+  --color-success-content: #ffffff;
+  --color-warning: #ff9f1c;
+  --color-warning-content: #141414;
+  --color-error: #d7141a;
+  --color-error-content: #ffffff;
+  --radius-selector: 0.35rem;
+  --radius-field: 0.35rem;
+  --radius-box: 0.4rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.3125rem;
+  --border: 3px;
+  --depth: 0;
+  --noise: 0;
+}
+
+/* Nighttime: a moody midnight issue — deep navy ink with electric highlights. */
+@plugin 'daisyui/theme' {
+  name: 'comic-night';
+  default: false;
+  color-scheme: dark;
+  --color-base-100: #10142b;
+  --color-base-200: #181e3d;
+  --color-base-300: #232b55;
+  --color-base-content: #f5f1e6;
+  --color-primary: #ff3b3b;
+  --color-primary-content: #12060a;
+  --color-secondary: #5b8cff;
+  --color-secondary-content: #071027;
+  --color-accent: #ffd60a;
+  --color-accent-content: #141414;
+  --color-neutral: #05060d;
+  --color-neutral-content: #f5f1e6;
+  --color-info: #5b8cff;
+  --color-info-content: #071027;
+  --color-success: #3ddc84;
+  --color-success-content: #05130b;
+  --color-warning: #ffb02e;
+  --color-warning-content: #141414;
+  --color-error: #ff5c5c;
+  --color-error-content: #12060a;
+  --radius-selector: 0.35rem;
+  --radius-field: 0.35rem;
+  --radius-box: 0.4rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.3125rem;
+  --border: 3px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@theme {
+  --font-display: 'Bangers', 'Impact', 'Arial Black', system-ui, sans-serif;
+  --font-comic: 'Comic Neue', 'Comic Sans MS', 'Trebuchet MS', system-ui, sans-serif;
+  --font-sans: 'Nunito Variable', 'Nunito', 'Segoe UI', system-ui, sans-serif;
+
+  --color-hero-red: #d7141a;
+  --color-hero-blue: #1453e6;
+  --color-hero-yellow: #ffd400;
+  --color-hero-green: #11a14a;
+  --color-ink: #141414;
+  --color-paper: #fffaf0;
+
+  --animate-panel-in: panel-in 380ms cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+  --animate-pop-in: pop-in 420ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+  --animate-burst: burst 700ms ease-out both;
+  --animate-boing: boing 480ms cubic-bezier(0.2, 0.9, 0.3, 1.5);
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-wiggle: wiggle 2.8s ease-in-out infinite;
+}
+
+/* ---------- Theme tokens shared by custom comic components ---------- */
+:root,
+[data-theme='comic'] {
+  --ink: #141414;
+  --panel-shadow: #141414;
+  --panel-bg: #ffffff;
+  --dot: rgb(20 20 20 / 0.09);
+  --bubble-bg: #ffffff;
+  --bubble-ink: #141414;
+  --rays-a: #ffd400;
+  --rays-b: #ffe766;
+  --scene-a: rgb(255 212 0 / 0.16);
+}
+
+[data-theme='comic-night'] {
+  --ink: #000000;
+  --panel-shadow: #5b8cff;
+  --panel-bg: #181e3d;
+  --dot: rgb(91 140 255 / 0.16);
+  --bubble-bg: #fffaf0;
+  --bubble-ink: #141414;
+  --rays-a: #1b2250;
+  --rays-b: #232c66;
+  --scene-a: rgb(91 140 255 / 0.08);
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-base-100 text-base-content font-sans antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background-image: radial-gradient(var(--dot) 1.4px, transparent 1.6px);
+    background-size: 14px 14px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-wide;
+    line-height: 1.05;
+  }
+
+  :focus-visible {
+    outline: 3px dashed var(--color-secondary);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: #141414;
+  }
+}
+
+/* ---------- Comic building blocks ---------- */
+@layer components {
+  /* A comic panel: thick ink border + hard offset shadow. */
+  .panel {
+    position: relative;
+    background: var(--panel-bg);
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--panel-shadow);
+    border-radius: 0.35rem;
+  }
+  .panel-lg {
+    box-shadow: 10px 10px 0 var(--panel-shadow);
+  }
+  @media (max-width: 639px) {
+    .panel-lg {
+      box-shadow: 6px 6px 0 var(--panel-shadow);
+    }
+  }
+
+  /* Halftone dot fills in each hero color. */
+  .halftone {
+    background-image: radial-gradient(rgb(0 0 0 / 0.2) 24%, transparent 26%);
+    background-size: 9px 9px;
+  }
+  .halftone-light {
+    background-image: radial-gradient(rgb(255 255 255 / 0.28) 24%, transparent 26%);
+    background-size: 9px 9px;
+  }
+  .fill-red {
+    background-color: var(--color-hero-red);
+    color: #fff;
+  }
+  .fill-blue {
+    background-color: var(--color-hero-blue);
+    color: #fff;
+  }
+  .fill-yellow {
+    background-color: var(--color-hero-yellow);
+    color: #141414;
+  }
+  .fill-green {
+    background-color: var(--color-hero-green);
+    color: #fff;
+  }
+
+  /* Radiating sunburst used behind hero art. */
+  .sunburst {
+    background: repeating-conic-gradient(from 0deg at 50% 55%, var(--rays-a) 0deg 9deg, var(--rays-b) 9deg 18deg);
+  }
+
+  /* Big outlined comic lettering. */
+  .comic-title {
+    font-family: var(--font-display);
+    color: var(--color-hero-yellow);
+    -webkit-text-stroke: 2px var(--ink);
+    paint-order: stroke fill;
+    text-shadow:
+      3px 3px 0 var(--ink),
+      6px 6px 0 var(--color-hero-red);
+    letter-spacing: 0.03em;
+  }
+  .comic-title-sm {
+    -webkit-text-stroke: 1.5px var(--ink);
+    text-shadow: 2px 2px 0 var(--ink);
+  }
+  .comic-title-blue {
+    text-shadow:
+      3px 3px 0 var(--ink),
+      6px 6px 0 var(--color-hero-blue);
+  }
+
+  /* Yellow narration caption boxes ("MEANWHILE..."). */
+  .caption {
+    display: inline-block;
+    background: var(--color-hero-yellow);
+    color: #141414;
+    border: 3px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.65rem;
+    line-height: 1.2;
+  }
+
+  /* Comic buttons with offset shadows that "press in". */
+  .comic-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3rem;
+    padding: 0.55rem 1.15rem;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #141414;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 0.4rem;
+    box-shadow: 4px 4px 0 var(--ink);
+    cursor: pointer;
+    user-select: none;
+    transition:
+      transform 120ms ease,
+      box-shadow 120ms ease,
+      background-color 120ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .comic-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .comic-btn:active {
+    transform: translate(3px, 3px) scale(0.98);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+  .comic-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .comic-btn-red {
+    background: var(--color-hero-red);
+    color: #fff;
+  }
+  .comic-btn-blue {
+    background: var(--color-hero-blue);
+    color: #fff;
+  }
+  .comic-btn-yellow {
+    background: var(--color-hero-yellow);
+    color: #141414;
+  }
+  .comic-btn-ink {
+    background: #141414;
+    color: #fff;
+    box-shadow: 4px 4px 0 var(--color-hero-yellow);
+  }
+  .comic-btn-ink:hover {
+    box-shadow: 6px 6px 0 var(--color-hero-yellow);
+  }
+  .comic-btn-lg {
+    min-height: 4rem;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    padding: 0.7rem 1.8rem;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .comic-btn-lg:hover {
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .comic-btn-sm {
+    min-height: 2.75rem;
+    font-size: 1.05rem;
+    padding: 0.4rem 0.85rem;
+  }
+
+  /* Speech bubble with a tail (bottom-left by default). */
+  .bubble {
+    position: relative;
+    background: var(--bubble-bg);
+    color: var(--bubble-ink);
+    border: 4px solid var(--ink);
+    border-radius: 2.2rem / 1.8rem;
+    padding: 1.25rem 1.5rem;
+    font-family: var(--font-comic);
+    font-weight: 700;
+  }
+  .bubble::before,
+  .bubble::after {
+    content: '';
+    position: absolute;
+    left: 2.75rem;
+    clip-path: polygon(0 0, 100% 0, 12% 100%);
+  }
+  .bubble::before {
+    bottom: -27px;
+    width: 40px;
+    height: 28px;
+    background: var(--ink);
+  }
+  .bubble::after {
+    bottom: -16px;
+    left: calc(2.75rem + 6px);
+    width: 26px;
+    height: 22px;
+    background: inherit;
+  }
+  .bubble-right::before {
+    left: auto;
+    right: 2.75rem;
+    clip-path: polygon(0 0, 100% 0, 88% 100%);
+  }
+  .bubble-right::after {
+    left: auto;
+    right: calc(2.75rem + 6px);
+    clip-path: polygon(0 0, 100% 0, 88% 100%);
+  }
+  .bubble-shout {
+    background: var(--color-hero-yellow);
+    color: #141414;
+  }
+
+  /* Thought bubble: cloud-ish box with trailing circles. */
+  .thought {
+    position: relative;
+    background: var(--bubble-bg);
+    color: var(--bubble-ink);
+    border: 4px solid var(--ink);
+    border-radius: 3rem;
+    padding: 1rem 1.4rem;
+    font-family: var(--font-comic);
+    font-weight: 700;
+  }
+  .thought::before,
+  .thought::after {
+    content: '';
+    position: absolute;
+    background: var(--bubble-bg);
+    border: 3px solid var(--ink);
+    border-radius: 9999px;
+  }
+  .thought::before {
+    width: 22px;
+    height: 22px;
+    bottom: -20px;
+    left: 2.5rem;
+  }
+  .thought::after {
+    width: 12px;
+    height: 12px;
+    bottom: -36px;
+    left: 1.8rem;
+  }
+
+  /* Faint radiating lines behind the joke speech bubbles. */
+  .scene {
+    background-color: var(--panel-bg);
+    background-image:
+      radial-gradient(var(--dot) 1.3px, transparent 1.5px),
+      repeating-conic-gradient(from 0deg at 0% 100%, var(--scene-a) 0deg 4deg, transparent 4deg 8deg);
+    background-size:
+      12px 12px,
+      100% 100%;
+  }
+
+  /* Diagonal "zip" divider. */
+  .zip-divider {
+    height: 14px;
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    background: repeating-linear-gradient(-45deg, var(--color-hero-red) 0 10px, var(--color-hero-yellow) 10px 20px);
+  }
+
+  /* Navigation links. */
+  .nav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    padding: 0.35rem 0.85rem;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 3px solid transparent;
+    border-radius: 0.4rem;
+    color: inherit;
+    transition:
+      transform 120ms ease,
+      background-color 120ms ease;
+  }
+  .nav-pill:hover {
+    border-color: var(--ink);
+    background: rgb(255 255 255 / 0.18);
+    transform: rotate(-2deg);
+  }
+  .nav-pill[aria-current='page'] {
+    background: var(--color-hero-yellow);
+    color: #141414;
+    border-color: var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    transform: rotate(-2deg);
+  }
+
+  /* Mobile bottom tab bar. */
+  .tabbar-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+    min-height: 3.6rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    border-top: 4px solid transparent;
+  }
+  .tabbar-link[aria-current='page'] {
+    background: var(--color-hero-yellow);
+    color: #141414;
+    border-top-color: var(--color-hero-red);
+  }
+
+  /* Category tiles (radio buttons styled as comic chips). */
+  .cat-tile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 3.75rem;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    border: 3px solid var(--ink);
+    border-radius: 0.4rem;
+    background: var(--panel-bg);
+    box-shadow: 3px 3px 0 var(--ink);
+    cursor: pointer;
+    transition:
+      transform 120ms ease,
+      box-shadow 120ms ease;
+  }
+  .cat-tile:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+  }
+  .cat-tile[aria-checked='true'] {
+    transform: translate(-2px, -2px) rotate(-1deg);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .cat-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 3px solid var(--ink);
+    border-radius: 9999px;
+  }
+
+  /* Kicker text inside panels. */
+  .kicker {
+    font-family: var(--font-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .sr-only-focusable:not(:focus) {
+    @apply sr-only;
+  }
+}
+
+/* ---------- Category tones ---------- */
+.tone-red {
+  --tone: var(--color-hero-red);
+  --tone-ink: #fff;
+}
+.tone-blue {
+  --tone: var(--color-hero-blue);
+  --tone-ink: #fff;
+}
+.tone-yellow {
+  --tone: var(--color-hero-yellow);
+  --tone-ink: #141414;
+}
+.tone-green {
+  --tone: var(--color-hero-green);
+  --tone-ink: #fff;
+}
+.tone-bg {
+  background-color: var(--tone);
+  color: var(--tone-ink);
+}
+.cat-tile[aria-checked='true'] {
+  background-color: var(--tone);
+  color: var(--tone-ink);
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes panel-in {
+  0% {
+    opacity: 0;
+    transform: translateX(40px) rotate(2deg) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-8deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.06) rotate(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-20deg);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35) rotate(10deg);
+  }
+}
+@keyframes boing {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.45) rotate(-12deg);
+  }
+  60% {
+    transform: scale(0.88) rotate(6deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, -8deg));
+  }
+  50% {
+    transform: translateY(-8px) rotate(var(--r, -8deg));
+  }
+}
+@keyframes wiggle {
+  0%,
+  90%,
+  100% {
+    transform: rotate(var(--r, 8deg));
+  }
+  93% {
+    transform: rotate(calc(var(--r, 8deg) - 6deg));
+  }
+  96% {
+    transform: rotate(calc(var(--r, 8deg) + 6deg));
+  }
+}
+
+/* ---------- Reduced motion: app setting OR operating-system preference ---------- */
+html[data-motion='reduced'] *,
+html[data-motion='reduced'] *::before,
+html[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0ms !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+html[data-motion='reduced'] {
+  scroll-behavior: auto;
+}
+html[data-motion='reduced'] .motion-decor {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

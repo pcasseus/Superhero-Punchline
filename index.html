@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" data-theme="comic">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Superhero Punchlines: a comic-book style joke generator with clean Marvel, DC, and Marvel vs. DC jokes." />
+    <meta name="theme-color" content="#d7141a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <title>Superhero Punchlines · Superhero Joke Generator</title>
+    <script>
+      // Apply the saved theme and motion preference before first paint (prevents a light/dark flash).
+      (function () {
+        try {
+          var s = JSON.parse(localStorage.getItem('superhero-punchlines:settings') || '{}');
+          var dark = s.theme === 'dark' || (s.theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var root = document.documentElement;
+          root.setAttribute('data-theme', dark ? 'comic-night' : 'comic');
+          var reduce = s.animations === false || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          root.setAttribute('data-motion', reduce ? 'reduced' : 'full');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>Superhero Punchlines needs JavaScript turned on to tell jokes.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
